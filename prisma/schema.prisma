@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  name      String   @unique
+  units     Units[]
+  users     Users[]
+}
+
+model Users {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String   @unique
+  role      String?
+  email     String?
+  phone     String?
+  company   Company? @relation(fields: [companyId], references: [id])
+  companyId String?  @db.ObjectId
+}
+
+model Units {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  name      String
+  company   Company? @relation(fields: [companyId], references: [id])
+  companyId String?  @db.ObjectId
+  assets    Assets[]
+}
+
+model Assets {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime @default(now())
+  image       String
+  name        String
+  description String
+  model       String
+  owner       String
+  status      Status   @default(Stopped)
+  health      Float
+  unit        Units?   @relation(fields: [unitId], references: [id])
+  unitId      String?  @db.ObjectId
+}
+
+enum Status {
+  Running
+  Alerting
+  Stopped
+}
