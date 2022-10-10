@@ -1,10 +1,10 @@
 import { assetsRepositorie } from "../Repositories/assetsRepository.js";
 
-export async function createAsset(){
+export async function createAsset() {
 
 }
 
-export async function allAssets(companyId:string){
+export async function allAssets(companyId: string) {
     const assets = await assetsRepositorie.queryStatus(companyId);
     let allAssets = [];
 
@@ -14,5 +14,7 @@ export async function allAssets(companyId:string){
         });
     });
 
-    return allAssets;
+    const assetsFormat = allAssets.map(asset => { return { name: asset.name, y: asset.health, status: asset.status } })
+
+    return assetsFormat;
 }
