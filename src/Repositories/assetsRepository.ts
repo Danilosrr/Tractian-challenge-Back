@@ -1,18 +1,32 @@
 import { prisma } from "../config/database.js";
 
-async function queryStatus(companyId: string) {
+async function queryCompanyAssets(companyId: string) {
     return await prisma.company.findMany({
         where: { id: companyId },
         include: {
-            units: { 
-                include: { 
-                    assets: true 
-                } 
+            units: {
+                include: {
+                    assets: true
+                }
+            }
+        }
+    })
+}
+
+async function queryUnits(companyId: string) {
+    return await prisma.company.findMany({
+        where: { id: companyId },
+        include: {
+            units: {
+                include: {
+                    assets: true
+                }
             }
         }
     })
 }
 
 export const assetsRepositorie = {
-    queryStatus
+    queryCompanyAssets,
+    queryUnits
 };
