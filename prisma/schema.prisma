@@ -22,12 +22,12 @@ model Company {
 model Users {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String   @unique
-  picture   String?
-  role      String?
-  email     String?
-  phone     String?
-  company   Company? @relation(fields: [companyId], references: [id])
-  companyId String?  @db.ObjectId
+  picture   String
+  role      String
+  email     String
+  phone     String
+  company   Company @relation(fields: [companyId], references: [id])
+  companyId String  @db.ObjectId
 }
 
 model Units {
