@@ -33,7 +33,7 @@ model Users {
 model Units {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   createdAt DateTime @default(now())
-  name      String
+  name      String   @unique
   company   Company? @relation(fields: [companyId], references: [id])
   companyId String?  @db.ObjectId
   assets    Assets[]
@@ -41,10 +41,10 @@ model Units {
 
 model Assets {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt   DateTime @default(now())
+  createdAt   DateTime? @default(now())
   image       String?
   name        String
-  description String
+  description String?
   model       String
   owner       String
   status      Status   @default(Stopped)

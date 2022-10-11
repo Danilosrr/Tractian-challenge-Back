@@ -1,8 +1,19 @@
-import { Assets } from "@prisma/client";
+import { notFoundError } from "../Middlewares/errorHandler.js";
 import { assetsRepositorie } from "../Repositories/assetsRepository.js";
+import { newAsset } from "../Schemas/assetsSchema.js";
 
-async function createAsset() {
+export interface createAsset extends newAsset {
+    unitId: string
+}
 
+async function createNewAsset(newAsset:newAsset) {
+    const unit = await assetsRepositorie.queryUnitName(newAsset.unit)
+    if (!unit) throw notFoundError();
+
+    const createAsset:createAsset = {...newAsset,unitId: unit.id}
+
+    const asset = await assetsRepositorie.createNewAsset(createAsset)
+    return asset
 }
 
 async function allAssets(companyId: string) {
@@ -46,7 +57,7 @@ async function unitAssets(companyId: string) {
     const assetsFormat = unitAssets.map(unit => {
         return {
             name: unit.name, assets: unit.assets.map(
-                asset => { return { name: asset.name, y: asset.health, status: asset.status } })
+                asset => { return { name: asset.name, y: asset.health, status: asset.status, company: assets[0].name } })
         }
     });
 
@@ -54,7 +65,7 @@ async function unitAssets(companyId: string) {
 }
 
 export const assetsService = {
-    createAsset,
+    createNewAsset,
     allAssets,
     formatAllAssets,
     unitAssets

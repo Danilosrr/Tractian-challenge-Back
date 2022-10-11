@@ -1,9 +1,15 @@
 import { Request, Response } from "express";
 import { badRequestError } from "../Middlewares/errorHandler.js";
+import { newAsset } from "../Schemas/assetsSchema.js";
 import { assetsService } from "../Services/assetsService.js";
 
 export async function postAsset(req: Request, res: Response) {
-  await assetsService.createAsset();
+  const newAsset: newAsset = req.body;
+
+  const companyId:string = req.params.companyId;
+  if (!companyId) { throw badRequestError() }
+
+  await assetsService.createNewAsset(newAsset);
 };
 
 export async function getAllAssets(req: Request, res: Response) {

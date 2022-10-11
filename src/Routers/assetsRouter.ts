@@ -1,10 +1,11 @@
 import { Router } from "express";
 import { getAllAssets, postAsset } from "../Controllers/assetsController.js";
-import upload from "../Middlewares/uploadMiddleware.js";
+import validSchema from "../Middlewares/validateSchema.js";
+import { newAssetSchema } from "../Schemas/assetsSchema.js";
 
 const assetsRouter = Router();
 
-assetsRouter.post('/assets', upload.single('asset'), postAsset)
+assetsRouter.post('/assets/:companyId', validSchema(newAssetSchema), postAsset)
 assetsRouter.get('/assets/:companyId', getAllAssets)
 
 export default assetsRouter; 
