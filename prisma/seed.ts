@@ -16,6 +16,27 @@ const units = [
   }
 ]
 
+const users = [
+  {
+    name: 'Danilo Ribeiro',
+    picture: 'https://avatars.githubusercontent.com/u/98192838?v=4',
+    email: 'danilo_srr@hotmail.com',
+    phone: '83 998817547'
+  },
+  {
+    name: 'Danilo Sabino',
+    picture: 'https://avatars.githubusercontent.com/u/98192838?v=4',
+    email: 'danilo_srr@hotmail.com',
+    phone: '83 998817547'
+  },
+  {
+    name: 'Danilo Rosas',
+    picture: 'https://avatars.githubusercontent.com/u/98192838?v=4',
+    email: 'danilo_srr@hotmail.com',
+    phone: '83 998817547'
+  },
+]
+
 const status = [
   'Running',
   'Alerting',
@@ -60,7 +81,7 @@ async function seedAssets(units:Units[]) {
     for(let i = 1; i <= 10; i++) {
       companyAssets.push({
         name: `Asset ${i}`,
-        image: '',
+        image: 'https://aprender.buzzero.com/buzzers/wilson-schwebel/41350/HotSiteImage.jpg',
         description: 'description example',
         model: 'machinery model',
         owner: 'owner',
@@ -78,12 +99,27 @@ async function seedAssets(units:Units[]) {
   });
 }
 
+async function seedUsers(companyId:string) {
+  return await prisma.$transaction(async (prisma: PrismaClient) => {
+    await prisma.users.deleteMany();
+
+    const companyUsers = users.map((user) => { return {...user, companyId} });
+
+    await prisma.users.createMany({
+      data: companyUsers,
+    });
+
+    return await prisma.users.findMany();
+  });
+}
+
 async function main() {
   console.log(`Start seeding ...`);
 
   const company = await seedCompany();
   const units = await seedUnits(company.id);
   const assets = await seedAssets(units);
+  const users = await seedUsers(company.id);
 
   console.log(assets);
 
