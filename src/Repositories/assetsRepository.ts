@@ -6,7 +6,11 @@ async function queryCompanyAssets(companyId: string) {
         include: {
             units: {
                 include: {
-                    assets: true
+                    assets: { 
+                        include: { 
+                            unit: true
+                        }
+                    }
                 }
             }
         }
